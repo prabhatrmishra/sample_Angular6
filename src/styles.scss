@@ -1,0 +1,343 @@
+@import "var";
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700|Lato');
+::-ms-clear {
+    display: none;
+}
+
+::selection {
+    background: #000000;
+    color: $font-light
+}
+
+::placeholder {
+    color: grey !important;
+    font-family: $font-primary;
+}
+
+:focus {
+    outline: 1px dashed $primary;
+}
+
+*,
+h1,
+h2,
+h3,
+p,
+a,
+em,
+small {
+    font-family: $font-secondary;
+    text-transform: none !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+}
+
+h1 {
+    font-family: $font-primary !important;
+    font-size: $font-large !important;
+    margin-top: 10px;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    font-family: $font-primary !important;
+}
+
+p {
+    font-size: $font-medium;
+    color: black;
+}
+
+small,
+a {
+    font-size: $font-smaller;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    color: $font-dark !important;
+}
+
+a,
+.ce-link {
+    color: $font-dark !important;
+}
+
+a:hover,
+.ce-link:hover {
+    color: $primary !important;
+}
+
+html,
+body {
+    margin: 0;
+    background-color: $background-light !important;
+    height: auto;
+    width: 100%;
+    min-width: 100%;
+}
+
+body {
+    overflow-y: scroll;
+}
+
+// input
+.ce-label {
+    padding: 0 10px 3px 5px !important;
+    background: transparent !important;
+    font-weight: normal !important;
+    color: $font-dark !important;
+    font-size: $font-smaller;
+    font-family: $font-secondary !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.ce-radio,
+.ce-checkbox {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: 0 0 0 0.5px $primary;
+    &:checked {
+        background-color: $primary !important; // border: 2px solid $secondary !important;
+        box-shadow: none;
+        padding: 2px;
+        &:focus {
+            background-color: $primary !important;
+        }
+    }
+}
+
+.ce-input,
+.ce-select,
+.ce-textarea {
+    background-color: transparent !important;
+    color: $font-dark !important;
+    font-size: $font-large !important;
+    font-family: $font-primary !important;
+    font-weight: normal !important;
+    border: none !important;
+    padding-bottom: 0 !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 0 0 0.5px $font-dark;
+    border-radius: $radius !important;
+    &:focus {
+        color: $font-dark !important;
+        font-family: $font-primary !important;
+        box-shadow: 0 0 0 2px $primary;
+    }
+    &:disabled {
+        box-shadow: none;
+    }
+}
+
+// button
+button {
+    cursor: pointer;
+}
+
+.ce-icon-button {
+    background-color: whitesmoke !important;
+    border: 2px solid $primary !important;
+    color: $primary !important;
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
+        background-color: $primary !important;
+        color: $white !important;
+    }
+    &--ringed {
+        box-shadow: 0 0 0 1px $primary, 0 1px 0 2px rgba(0, 0, 0, .06) !important;
+        &:hover,
+        &:focus {
+            background-color: $primary !important;
+            color: $font-light !important;
+            box-shadow: 0 0 0 2px $white, 0 0 0 3px $primary !important;
+        }
+    }
+}
+
+.ce-button-default {
+    &:disabled {
+        pointer-events: none;
+        color: lightgrey !important;
+        border: 2px solid grey !important;
+    }
+    &:hover,
+    &:focus {
+        color: $font-light !important;
+    }
+    &.ce-danger {
+        // border: 2px solid lighten($color: $error, $amount: 10) !important;
+        // color: lighten($color: $error, $amount: 10) !important;
+        &:hover,
+        &:focus,
+        &--focus {
+            background-color: transparentize($color: $error, $amount: 0.7) !important;
+            color: $error !important;
+        }
+    }
+}
+
+.ce-button {
+    background: $primary !important;
+    color: $font-light !important;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16) !important;
+    transition: all 0.2s ease-in, box-shadow 0.2s ease-in !important;
+    border-radius: $radius !important;
+    text-align: left !important;
+    &-header {
+        padding: 0 !important;
+        background: transparent !important;
+        border: 2px solid $primary !important;
+        display: flex !important;
+        align-items: center !important;
+        &>span {
+            padding: 10px !important;
+            line-height: 14px !important;
+            background: $primary !important;
+            color: $white !important;
+        }
+        &>svg {
+            background-color: inherit !important;
+            padding: 5px !important;
+            color: $primary !important;
+            box-shadow: none !important;
+            transition: background 0.2s ease-in-out, color 0.3s ease-in-out;
+        }
+        &:hover,
+        &:focus {
+            background-color: $white !important;
+            color: $font-light !important;
+            box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.225) !important;
+            &>svg {
+                background: $primary !important;
+                color: $white !important;
+            }
+        }
+    }
+    &--in-focus {
+        background-color: transparentize($color: $primary, $amount: .3) !important;
+        color: $font-dark !important;
+        border: none !important;
+        box-shadow: 0 0 0 1px $font-dark !important;
+    }
+    &:hover:not(.ce-button-header),
+    &:focus:not(.ce-button-header) {
+        background-color: transparentize($color: $primary, $amount: .1) !important;
+        color: $font-light !important;
+        box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.225) !important;
+    }
+    &:disabled {
+        background-color: lighten($color: $secondary, $amount: 15) !important;
+        color: $background-dark !important;
+        box-shadow: 0 0 0 1px $background-dark !important;
+        border: none !important;
+    }
+    &.ce-danger {
+        color: $error !important;
+        box-shadow: none !important;
+        color: grey !important;
+        background: none !important;
+        &:hover,
+        &:focus,
+        &--focus {
+            background-color: lighten($color: $error, $amount: 30) !important;
+            color: $error !important;
+            box-shadow: 0 0 0 2px $white, 0 0 0 3px $error !important;
+        }
+        &--focus:hover {
+            background-color: lighten($color: $error, $amount: 20) !important;
+        }
+    }
+    &--ghost {
+        box-shadow: none !important;
+    }
+}
+
+// general
+.ce-filter {
+    width: 100px;
+}
+
+.ce-background {
+    &-white {
+        background: $white;
+    }
+}
+
+.ce-color {
+    &-white {
+        color: $white !important;
+    }
+    &-primary {
+        color: $primary;
+    }
+    &-danger {
+        color: $error !important;
+    }
+}
+
+.ce-font {
+    &-primary {
+        font-family: $font-primary !important;
+    }
+    &-lato {
+        font-family: $font-lato !important;
+    }
+}
+
+.ce-text {
+    &-underline-dark {
+        text-decoration: underline;
+        text-decoration-color: $font-dark;
+    }
+    &-underline-light {
+        text-decoration: underline;
+        text-decoration-color: $font-light;
+    }
+    &-helper {
+        font-style: italic;
+    }
+}
+
+.ce-tab {
+    margin-left: 0 !important;
+}
+
+.ce-add-radius {
+    border-radius: $radius;
+}
+
+.ce-accordion {
+    &>li {
+        &:first-child {
+            margin-top: 0 !important;
+        }
+        &>a>span {
+            font-size: 16px !important;
+        }
+    }
+}
+
+table> tbody>tr>td:first-child,
+.ce-table>tbody>tr>td:first-child {
+    min-width: 150px !important;    
+}
+
+.ce-filter {
+    border: 1px solid $primary !important;
+    border-radius: 2.5px !important;
+    width: 150px !important;
+    padding: 5px !important;
+    height: 14px !important;
+    &>input {
+        padding: 0 !important;
+        background-color: none !important;
+        font-size: 14px !important;
+        line-height: 10px !important;
+        box-shadow: none !important;
+        &:focus {
+            background-color: none !important;
+        }
+    }
+}

@@ -1,0 +1,32 @@
+@import "../../../var";
+.ce-tag {
+    padding: 0 10px 0 0;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.36) !important;
+    transition: all 0.2s ease-in-out;
+    &:focus,
+    &:hover,
+    &-edit {
+        box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.56) !important;
+    }
+}
+
+.ce-tag-border-small { 
+    border-radius: 2.5px;
+}
+
+.ce-tag-border {
+    border-radius: 100px;
+}
+
+.ce-input {
+    width: 150px;
+    background-color: lighten($color: lightgrey, $amount: 10) !important;
+    color: $font-dark !important;
+    box-shadow: none !important;
+    &:focus {
+        background-color: lightgrey !important;
+    }
+    &:disabled {
+        background: transparent !important;
+    }
+}

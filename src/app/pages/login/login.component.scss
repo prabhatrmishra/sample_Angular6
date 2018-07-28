@@ -1,0 +1,24 @@
+@import "../../../var";
+.ce-login {
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.479) !important;
+        font-family: $font-primary;
+    }
+    width: 800px;
+    background: url('/assets/images/LogIn.png') no-repeat left / cover $primary;
+    &>*,
+    small {
+        color: #424242 !important;
+    }
+    .ce-input {
+        background-color: $translucent-dark !important;
+        box-shadow: none !important;
+        color: #424242 !important;
+        &:focus {
+            background-color: $translucent !important;
+        }
+    }
+    .ce-label {
+        color: #424242 !important;
+    }
+}

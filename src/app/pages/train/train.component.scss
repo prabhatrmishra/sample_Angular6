@@ -1,0 +1,40 @@
+@import "../../../var";
+
+.ce-tab {
+    background: transparent;
+    &::before {
+        border: none !important;
+    }
+    &>.ce-active {
+        background-color: $white;
+        & > a {
+            font-weight: 700;
+            color: black;
+        }
+    }
+    &>* {
+        border-bottom: 4px solid transparent !important;
+        padding: 5px 10px 5px 10px;
+        font-family: $font-primary !important;
+        font-weight: 700;
+        color: rgb(75, 75, 75); 
+        transition: all 0.2s ease-in-out;
+        &:hover:not(.ce-active) {
+            background-color: transparentize($color: #ffffff, $amount: .4) 
+        }
+        & > a:focus {
+            outline: none !important;            
+        }
+        & > a{
+            padding-left: 5px;
+            border: none;
+            text-align: left;
+        }
+    }
+}
+
+.ce-info {
+    font-family: $font-secondary;
+    color: grey;
+    font-weight: 400;
+}

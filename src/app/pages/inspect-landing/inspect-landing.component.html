@@ -1,0 +1,127 @@
+<section>
+  <div class="ce-flex ce-flex-between ce-margin-small-top">
+    <div style="margin-left: -10px">
+      <h3 class="ce-flex ce-flex-middle">
+        <span class="ce-margin-small-left ce-font-lato">
+          Verify Extracted Data
+        </span>
+      </h3>
+    </div>
+    <div>
+      <a class="ce-button ce-button-header" role="button" href='/assets/doc/Leasing Contracts IFRS 16 Fields.xlsx' target="_blank" rel="nolooper">
+        <span>
+          Download as Spreadsheet
+        </span>
+        <img src="/assets/ico/download.svg" alt="add" ce-svg>
+      </a>
+    </div>
+  </div>
+  <div class="">
+    <div class="">
+      <div class="ce-flex ce-flex-between">
+        <div class="ce-width-1-4">
+          <div>
+            <label class="ce-label" for="ce-profile-select">Extraction Job</label>
+            <div class="ce-flex">
+              <select id="ce-profile-select" class="ce-select" (change)="profileChange()">
+                <option *ngFor="let extractProfile of extractProfiles" [value]="extractProfile">{{extractProfile}}</option>
+              </select>
+              <div *ngIf="blockDisplay" class="ce-margin-small-left">
+                <div class="ce-color-primary ce-margin-auto" ce-spinner></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ce-flex ce-flex-column">
+          <div class="ce-flex">
+          </div>
+        </div>
+      </div>
+      <div>
+        <div *ngIf="!blockDisplay" class="ce-margin-small-top">
+          <table class="ce-table ce-table-divider ce-table-middle ce-margin-remove-vertical">
+            <thead class="">
+              <tr class="ce-flex">
+                <th class="ce-flex ce-flex-middle ce-width-4-6">
+                  <span *ngIf="!showFilter" class="">Document Name</span>
+                  <span *ngIf="showFilter" class="ce-animation-slide-left-small ce-flex ce-flex-middle ce-filter">
+                    <input class="ce-input" type="text" placeholder="Document Name" (blur)="toggleFilter()" [(ngModel)]="filter" aria-label="Name" #filterInput>
+                    <span class="ce-color-dark" (click)="toggleFilter()">
+                      <img src="/assets/ico/close.svg" alt="search Profiles" height="25" width="25" ce-svg>
+                    </span>
+                  </span>
+                  <div *ngIf="!showFilter" class="ce-margin-left" (click)="toggleFilter()">
+                    <img src="/assets/ico/search.svg" alt="search Profiles" height="25" width="25" ce-svg>
+                  </div>
+                </th>
+                <th class="ce-width-1-6 ce-flex">
+                  Progress
+                </th>
+                <th class="ce-width-1-6">Extracted Values</th>
+                <th class="ce-width-1-6">Actions</th>
+              </tr>
+            </thead>
+          </table>
+          <ul class="ce-entities ce-margin-remove-top" ce-accordion="toggle:* > .ce-more">
+            <li *ngFor="let extractedFile of (extractedFiles | match:filter)" class="ce-background-white ce-border-rounded ce-padding-small">
+              <a class="ce-accordion-title ce-flex ce-flex-center">
+                <span class="ce-width-4-6 ce-margin-small-top ce-link">
+                  <a role="link" href='/assets/doc/Agreement-of-Lease-Residential_1.pdf' target="_blank" rel="nolooper" style="font-size:inherit">{{extractedFile.name}}</a>
+                </span>
+                <span class="ce-width-1-6 ce-flex ce-margin-small-top">
+                  <div *ngIf="(extractedFile.extracted % 1) >= 0" ce-tooltip="title:click to refresh;delay:500">
+                    <circle-progress class="ce-margin-auto" [percent]="extractedFile.extracted"></circle-progress>
+                  </div>
+                  <div class="" *ngIf="(extractedFile.extracted % 1) !== 0">
+                    {{extractedFile.extracted}}
+                  </div>
+                </span>
+                <span class="ce-width-1-6 ce-margin-small-top">
+                  <button class="ce-button-default ce-icon-button ce-margin-left" ce-tooltip="title: View Extracted Values;delay: 1000"
+                    name="view {{extractedFile.name}}" [routerLink]="['/inspect/tags/' + extractedFile.id]">
+                    <img src="/assets/ico/eye.svg" alt="view {{extractedFile.name}}" ce-svg>
+                  </button>
+                </span>
+                <span class="ce-width-1-6 ce-margin-small-top">
+                  <div class="ce-flex">
+                    <button class="ce-button-default ce-icon-button ce-more ce-margin-left" ce-tooltip="title: more;delay: 1000" name="more {{extractedFile.name}}">
+                      <img src="/assets/ico/more.svg" alt="more {{extractedFile.name}}" ce-svg>
+                    </button>
+                  </div>
+                </span>
+              </a>
+              <div class="ce-accordion-content ce-margin-small-top">
+                <hr>
+                <div class="ce-flex ce-child-width-1-2">
+                  <div>
+                    <div>
+                      <small>Path</small>
+                      <p class="ce-margin-remove-vertical">{{extractedFile.path}}</p>
+                    </div>
+                    <div class="ce-margin-small-top">
+                      <small>Last Updated</small>
+                      <p class="ce-margin-remove-vertical">{{extractedFile.lastUpdated | date}}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <small>File Status</small>
+                      <p class="ce-margin-remove-vertical">{{extractedFile.status}}</p>
+                    </div>
+                    <div class="ce-margin-small-top">
+                      <small>Updated By</small>
+                      <p class="ce-margin-remove-vertical">{{extractedFile.updated}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ce-flex">
+            <div class="ce-width-1-4"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

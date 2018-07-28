@@ -1,0 +1,145 @@
+<section>
+    <div class="ce-flex ce-flex-between ce-margin-small-top">
+      <div style="margin-left: -10px">
+        <h3 class="ce-flex ce-flex-middle">
+          <span class="ce-margin-small-left ce-font-lato">
+            Configuration Category
+            <span ce-tooltip="title: Define category of documents from which data needs to be extracted;delay: 200">
+              <img src="/assets/ico/info.svg" alt="info" height="15" ce-svg>
+            </span>
+          </span>
+        </h3>
+      </div>
+      <div>
+        <button class="ce-button ce-button-header" role="button" (click)="addNewCategory()">
+          <span>
+            New Configuration Category
+          </span>
+          <img src="/assets/ico/add.svg" alt="add" ce-svg>
+        </button>
+      </div>
+    </div>
+    <div class="ce-margin-small-top">
+      <table class="ce-table ce-table-divider ce-table-middle ce-table-expand ce-margin-remove-top">
+        <thead class="">
+          <tr>
+            <th class="ce-flex ce-flex-between ce-flex-middle" style="margin-top: 20px">
+              <span *ngIf="!showFilter" class="">Name</span>
+              <span *ngIf="showFilter" class="ce-animation-slide-left-small ce-flex ce-flex-middle ce-filter">
+                <input class="ce-input" type="text" placeholder="Name" (blur)="toggleFilter()" [(ngModel)]="filter" aria-label="Name" #filterInput>
+                <span class="ce-color-dark" (click)="toggleFilter()">
+                  <img src="/assets/ico/close.svg" alt="search Profiles" height="25" width="25" ce-svg>
+                </span>
+              </span>
+              <div *ngIf="!showFilter" (click)="toggleFilter()">
+                <img src="/assets/ico/search.svg" alt="search Profiles" height="25" width="25" ce-svg>
+              </div>
+            </th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Manage Attributes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ce-background-white" *ngFor="let trainingProfile of trainingProfiles">
+            <td [routerLink]="['/train/extract/' + trainingProfile.id]" class="ce-link">{{trainingProfile.trainingProfileName}}</td>
+            <td>{{trainingProfile.trainingProfileDesc}}</td>
+            <td>{{trainingProfile.docTypeId}}</td>
+            <td>
+              <button class="ce-button-default ce-icon-button" ce-tooltip="title: Manage Data Attributes;delay: 1000" name="edit {{trainingProfile.name}}"
+                [routerLink]="['/train/extract/' + trainingProfile.id]">
+                <img src="/assets/ico/label.svg" alt="Add Entities for {{trainingProfile.name}}" ce-svg>
+              </button>
+            </td>
+            <td>
+              <div class="ce-flex">
+                <button class="ce-button-default ce-icon-button " ce-tooltip="title: Edit Configuration Category;delay: 1000" name="edit {{trainingProfile.name}}"
+                  (click)="editCategory(trainingProfile)">
+                  <img src="/assets/ico/edit.svg" alt="edit {{trainingProfile.name}}" ce-svg>
+                </button>
+                <button class="ce-button-default ce-icon-button ce-danger ce-margin-small-left" ce-tooltip="title: delete;delay: 1000" name="edit {{trainingProfile.name}}"
+                  (click)="deleteProfile(trainingProfile)">
+                  <img src="/assets/ico/delete.svg" alt="delete {{trainingProfile.name}}" ce-svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
+  <div id="add-configuration-category" class="ce-flex-top" ce-modal>
+    <div class="ce-modal-dialog ce-modal-body ce-margin-auto-vertical">
+      <button class="ce-modal-close-default" type="button" ce-close></button>
+      <div>
+        <h3 class="ce-title ce-font-lato">{{addNewTitle}}</h3>
+        <div class="ce-margin-top">
+          <form [formGroup]="profileForm">
+            <div class="ce-margin-small">
+              <label class="ce-label" for="ce-profile-name">Configuration Category Name</label>
+              <input id="ce-profile-name" class="ce-input" type="text" placeholder="" formControlName="trainingProfileName">
+            </div>
+  
+            <div class="ce-margin-small">
+              <label class="ce-label" for="ce-profile-description">Configuration Category Description</label>
+              <input id="ce-profile-description" class="ce-input" type="text" placeholder="" formControlName="trainingProfileDesc">
+            </div>
+  
+  
+           <!--  <div class="ce-margin-small">
+              <label class="ce-label" for="ce-profile-document-type">Configuration Category Type</label>
+              <select id="ce-profile-document-type" class="ce-select" formControlName="docType">
+                <option value="Rental">Rental</option>
+                <option value="Lease">Lease</option>
+              </select>
+            </div> -->
+            <div class="ce-margin-small">
+              <label class="ce-label" for="docTypeList">Configuration Category Type</label>
+              <select
+              name="docTypeId"
+              id="docTypeId"
+              class="ce-select"
+              formControlName="docTypeId"
+              required>
+              <option
+                *ngFor="let doc_type of docTypeList"
+                [value]="doc_type.docTypeId">
+                {{doc_type.docTypeName }}
+              </option>
+            </select>
+            </div>
+            <!-- <div class="ce-margin-small">
+              <label class="ce-label" for="ce-profile-document-lang">Language</label>
+              <select id="ce-profile-document-type" class="ce-select" formControlName="lang">
+                <option value="Spanish">Spanish</option>
+                <option value="English">English</option>
+                <option value="Japneese">Japneese</option>
+              </select>
+            </div> -->
+             
+            <div class="ce-margin-small">
+              <label class="ce-label" for="docLangList">Language</label>
+              <select
+              name="docLangId"
+              id="docLangId"
+              class="ce-select"
+              formControlName="langId"
+              required>
+              <option
+                *ngFor="let docLang of docLangList"
+                [value]="docLang.langId">
+                {{docLang.langName }}
+              </option>
+            </select>
+            </div>
+            <button class="ce-button ce-margin-top" role="button">
+              Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,10 @@
+<div class="ce-tag ce-flex ce-flex-middle ce-margin-small" [ngClass]="{'ce-tag-border-small ce-tag-edit':edit, 'ce-tag-border':!edit, 'ce-tag-overridden':isOverridden}">
+  <span *ngIf="!edit">{{tag}}</span>  
+  <input class="ce-input ce-width-1-1" *ngIf="edit" type="text" [value]="tag" [disabled]="!edit" #input>
+  <button *ngIf="!edit" class="ce-button-default ce-icon-button ce-danger" name="delete {{tag}}" (click)="deleteTag()">
+    <img src="/assets/ico/close.svg" alt="delete" ce-svg>
+  </button>
+  <button *ngIf="edit" class="ce-button-default ce-icon-button ce-margin-left" name="done editing {{tag}}" (click)="editToggle()">
+    <img src="/assets/ico/done.svg" alt="done" ce-svg>
+  </button>
+</div>

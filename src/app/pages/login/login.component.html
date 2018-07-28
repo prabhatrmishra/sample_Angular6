@@ -1,0 +1,36 @@
+<div class="ce-container ce-flex ce-margin-large-top">
+  <div class="ce-margin-auto ce-margin-vertical-auto">
+    <div class="ce-login ce-card ce-card-body ce-flex ce-flex-between ce-flex-middle">
+      <div>
+        <img class="ce-logo-icon" src="/assets/logo/E1.svg" alt="Cognitive Extractor" height="100" width="100">
+      </div>
+      <div class="ce-margin-left-xlarge">
+        <div class="ce-logo">
+          <span class="">
+            <div class="ce-font-primary" style="line-height: 5px;margin-top: 20px;margin-bottom:0">Cognitive Data Extraction Solution</div>
+            <small class="ce-font-primary ce-color-white ce-text-center" style="font-size:50%">Extract information with ease</small>
+          </span>
+        </div>
+
+        <div class="ce-margin-top">
+          <form #loginForm="ngForm">
+            <div class="ce-margin-small">
+              <label class="ce-label" for="ce-login-username">Username</label>
+              <input id="ce-login-username" class="ce-input" type="text" placeholder="joe@example.com">
+            </div>
+
+            <div class="ce-margin-small">
+              <label class="ce-label" for="ce-login-password">Password</label>
+              <input id="ce-login-password" class="ce-input" type="password" placeholder="·······">
+            </div>
+          </form>
+        </div>
+        <div class="ce-margin-top">
+          <button class="ce-button" (click)="login()">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

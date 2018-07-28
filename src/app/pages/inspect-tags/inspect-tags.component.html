@@ -1,0 +1,94 @@
+<div>
+  <div class="ce-flex ce-flex-between ce-flex-center" style="margin-left: -48px">
+    <h3 class="ce-flex ce-flex-middle">
+      <span>
+        <button class="ce-button-default ce-icon-button" [routerLink]="['/inspect/land/0']">
+          <img src="/assets/ico/back.svg" alt="go back" ce-svg>
+        </button>
+      </span>
+      <span class="ce-margin-small-left" style="margin-top: 15px">
+        <h3 class="ce-font-lato" style="line-height:5px;margin-bottom:0">Verify Extracted Data</h3>
+        <small style="font-size:50%">
+          <span>//Path/to/</span>
+          <span class="ce-width-1-1">
+            <b>File_0.pdf</b>
+          </span>
+        </small>
+      </span>
+    </h3>
+    <div class="ce-margin-small-top">
+      <a class="ce-button ce-button-header ce-margin-small-left" role="button" href='/assets/doc/Leasing Contracts IFRS 16 Fields.xlsx' target="_blank" rel="nolooper">
+        <span>
+          Download as Spreadsheet
+        </span>
+        <img src="/assets/ico/download.svg" alt="add" ce-svg>
+      </a>
+    </div>
+  </div>
+  <div class="ce-margin-small ">
+    <div class="ce-margin ce-flex ce-flex-between">
+      <!-- <div>
+        <label class="ce-label ce-margin-small-top">Edit File Tags</label>
+        <br>
+        <label class="ce-label">
+          <input type="checkbox" class="ce-checkbox" name="override"> Over-ride Manually ?
+        </label>
+      </div> -->
+
+      <div class="">
+        <label class="ce-label">File Status</label>
+        <br>
+        <select class="ce-select" name="" id="">
+          <option value="Correction Not started">Correction Not started</option>
+          <option value="Correction in progress">Correction in progress</option>
+          <option value="Submitted for Verification">Submitted for Verification</option>
+          <option value="Verification in Progress">Verification in Progress</option>
+          <option value="Verification Completed ">Verification Completed</option>
+        </select>
+      </div>  
+
+      <div class="ce-margin-top">
+        <label class="ce-label">Color Legend</label>
+        <div class="ce-flex">
+          <div class="ce-flex ce-flex-middle">
+            <div class="ce-color-white ce-box-shadow-medium ce-border" style="height:20px;width:30px;background-color:#fff"></div>
+            <small class="ce-margin-small-left">Auto Extracted</small>
+          </div>
+          <div class="ce-flex ce-flex-middle ce-margin-small-left ">
+            <div class="ce-color-white ce-box-shadow-medium ce-border" style="height:20px;width:30px;background-color: rgb(227, 255, 219);"></div>
+            <small class="ce-margin-small-left">User Corrected</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ce-margin-top">
+      <table class="ce-table ce-table-small ce-table-divided">
+        <thead>
+          <tr>
+            <th class="ce-width-1-3">Data Attribute Name</th>
+            <th class="ce-width-2-3">Extracted Values</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tag of tags">
+            <td class="ce-width-1-3">{{tag[0]}}</td>
+            <td class="ce-width-2-3">
+              <div class="ce-flex ce-flex-wrap ce-flex-middle ce-margin-small" style="margin-left:-10px">
+                <div *ngFor="let value of tag[1]" class="ce-margin-small-left">
+                  <ce-tag [tag]="value" (remove)="remove($event, tag, value)"></ce-tag>
+                </div>
+                <div class="ce-margin-small-left">
+                  <ce-add-tag (emittedTagValue)="addTag($event, tag)"></ce-add-tag>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="ce-flex ce-flex-row ce-flex-between">
+    <div class="ce-flex ce-margin-bottom">
+      <button class="ce-button">Save</button>
+    </div>
+  </div>

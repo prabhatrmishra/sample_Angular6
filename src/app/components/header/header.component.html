@@ -1,0 +1,57 @@
+<section class="ce-animation-slide-top-small" *ngIf="hideHeader">
+  <nav class="ce-nav-container ce-navbar-container" ce-navbar>
+    <div class="ce-navbar-left">
+      <a class="ce-navbar-item ce-logo" [routerLink]="['/train/profile']" style="padding-left:43px">
+        <img class="ce-logo-icon" src="/assets/logo/E1.svg" alt="Cognitive Extractor" height="30" width="30" >
+        <span class="ce-margin-small-left ce-font-primary ce-color-white">
+          <span>Cognitive</span>
+          <br>
+          <span>Data Extraction</span>
+        </span>
+      </a>
+    </div>
+
+
+    <div class="ce-navbar-center ce-secondary-nav ce-container ce-background-white">
+      <ul class="ce-flex-center" ce-tab>
+        <!-- <li [routerLink]="['dashboard']" routerLinkActive="ce-active">
+          <a href="">Dashboard</a>
+        </li>
+        <li [routerLink]="['reports']" routerLinkActive="ce-active">
+          <a href="">Reports</a>
+        </li> -->
+        <li [routerLink]="['train']" routerLinkActive="ce-active">
+          <a href="">Configure</a>
+        </li>
+        <li [routerLink]="['extraction']" routerLinkActive="ce-active">
+          <a href="">Extract</a>
+        </li>
+        <li [routerLink]="['inspect']" routerLinkActive="ce-active">
+          <a href="">Verify</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="ce-navbar-right">
+      <a class="ce-user ce-navbar-item" style="padding-right:43px">
+        <span class="ce-flex ce-flex-middle">
+          <img class="ce-image-rounded ce-user-icon" src="/assets/images/user.png" height="30" width="30" alt="user">
+          <span class="ce-margin-small-left">
+            <small class="ce-color-white">Welcome</small>
+            <br>
+            <span>John Cena</span>
+          </span>
+        </span>
+      </a>
+      <div ce-dropdown="mode:click;pos: bottom-right">
+        <ul class="ce-nav ce-dropdown-nav">
+            <li><a href="#" class="ce-text-right">Change Password</a></li>
+            <li><a href="#" class="ce-color-danger ce-text-right">Logout</a></li>
+        </ul>
+    </div>
+
+    </div>
+  </nav>
+
+  
+</section>

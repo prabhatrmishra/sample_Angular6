@@ -1,0 +1,13 @@
+@import "../../../var";
+
+.ce-card-stats {
+    background: linear-gradient(230deg, $secondary, $primary);
+    margin-left: 10px;
+    color: $font-dark;
+}
+
+.ce-number {
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: $white;
+}

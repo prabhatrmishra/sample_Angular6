@@ -1,0 +1,78 @@
+@import "../../../var";
+.ce-logo-icon {
+    height: auto;
+    width: 50px;
+}
+
+.ce-logo {
+    font-size: 20px;
+}
+
+.ce-navbar-container {
+    background: $primary;
+    height: 80px !important;
+    &>* {
+        color: $white !important;
+    }
+}
+
+.ce-navbar-item {
+    height: 50px !important;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.ce-user {
+    color: $white;
+    height: 50px !important;
+    &>span {
+        &::before {
+            content: "Welcome";
+            color: white;
+        }
+        color: $white;
+    }
+}
+
+.ce-user-icon {
+    height: 34px;
+    width: 34px;
+    border-radius: 100%;
+}
+
+.ce-secondary-nav {
+    background: $primary;
+}
+
+.ce-tab {
+    background: transparent;
+    height: 80px;
+    &::before {
+        border: none !important;
+    }
+    &>* {
+        padding: 0 20px 0 20px;
+    }
+    &>.ce-active>a {
+        border-bottom: 5px solid $white !important;
+        font-weight: 400;
+        color: $white !important;
+    }
+    &>*>a {
+        line-height: 55px !important;
+        padding: 10px 20px 10px 20px;
+        font-family: $font-primary !important;
+        font-weight: 400;
+        color: $white !important;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            color: $white !important;
+            border-bottom: 5px solid $font-light !important;
+        }
+        &:focus {
+            outline: none !important;
+        }
+    }
+}
