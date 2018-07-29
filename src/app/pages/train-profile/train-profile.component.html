@@ -43,12 +43,12 @@
         </thead>
         <tbody>
           <tr class="ce-background-white" *ngFor="let trainingProfile of trainingProfiles">
-            <td [routerLink]="['/train/extract/' + trainingProfile.id]" class="ce-link">{{trainingProfile.trainingProfileName}}</td>
+            <td [routerLink]="['/train/extract/' + trainingProfile.trainingProfileId]" class="ce-link">{{trainingProfile.trainingProfileName}}</td>
             <td>{{trainingProfile.trainingProfileDesc}}</td>
             <td>{{trainingProfile.docTypeId}}</td>
             <td>
               <button class="ce-button-default ce-icon-button" ce-tooltip="title: Manage Data Attributes;delay: 1000" name="edit {{trainingProfile.name}}"
-                [routerLink]="['/train/extract/' + trainingProfile.id]">
+                [routerLink]="['/train/extract/' + trainingProfile.trainingProfileId]">
                 <img src="/assets/ico/label.svg" alt="Add Entities for {{trainingProfile.name}}" ce-svg>
               </button>
             </td>

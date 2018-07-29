@@ -4,7 +4,8 @@ import { kit } from 'src/app/app.const';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TrainEntityService } from './train-entity.service'
 import { constantService } from './../../constantService'
-
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'ce-train-entity',
   templateUrl: './train-entity.component.html',
@@ -12,7 +13,8 @@ import { constantService } from './../../constantService'
   providers: [TrainEntityService, constantService]
 })
 export class TrainEntityComponent implements OnInit, OnDestroy {
-
+  private sub: any;
+  private selectedTrainingProfileId: number;
   trainingProfiles = [
     {
       id: 1,
@@ -82,11 +84,16 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
     private formBuider: FormBuilder,
     private dragulaService: DragulaService,
     private trainEntityService: TrainEntityService,
-    private ConstantService: constantService
+    private ConstantService: constantService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit() {
-    console.log("In trainEntityComponent init -------")
+    this.sub = this.route.params.subscribe(params => {
+      this.selectedTrainingProfileId = +params['profile'];
+      console.log("Got the id",this.selectedTrainingProfileId);
+   });
     this.entityForm = this.formBuider.group({
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -161,15 +168,15 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
           console.log("I am getting data .....");
           console.log(data);
           if(data[0].status == 200){
-            alert("Training profiles fetched Susccessfully.");
+        //    alert("Training profiles fetched Susccessfully.");
             console.log(data);
           }
           else{
-            alert("Some error occured while fetching data.");
+           // alert("Some error occured while fetching data.");
           }
       },
       error =>{
-          alert("Some error occured at server side ")
+        //  alert("Some error occured at server side ")
       }
     )
   }
