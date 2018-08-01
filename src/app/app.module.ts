@@ -29,6 +29,7 @@ import { UrlServices } from './urlService'
 import { HttpClientModule } from '@angular/common/http';
 import { HttpErrorHandler }     from './http.error-handler.service';
 import {MessageService} from './message.service'
+import { ToastService } from 'src/app/service/toast.service';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,7 @@ import {MessageService} from './message.service'
       
     })
   ],
-  providers: [UrlServices,HttpErrorHandler,MessageService],
+  providers: [UrlServices, HttpErrorHandler, MessageService, ToastService],
   bootstrap: [AppComponent,]
 })
 export class AppModule { }

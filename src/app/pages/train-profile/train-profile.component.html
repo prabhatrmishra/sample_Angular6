@@ -42,25 +42,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="ce-background-white" *ngFor="let trainingProfile of trainingProfiles">
+          <tr class="ce-background-white" *ngFor="let trainingProfile of (trainingProfiles | match: filter: 'trainingProfileName')">
             <td [routerLink]="['/train/extract/' + trainingProfile.trainingProfileId]" class="ce-link">{{trainingProfile.trainingProfileName}}</td>
             <td>{{trainingProfile.trainingProfileDesc}}</td>
-            <td>{{trainingProfile.docTypeId}}</td>
+            <td>{{dataService.docTypeMap[trainingProfile.docTypeId]}}</td>
             <td>
               <button class="ce-button-default ce-icon-button" ce-tooltip="title: Manage Data Attributes;delay: 1000" name="edit {{trainingProfile.name}}"
                 [routerLink]="['/train/extract/' + trainingProfile.trainingProfileId]">
-                <img src="/assets/ico/label.svg" alt="Add Entities for {{trainingProfile.name}}" ce-svg>
+                <img src="/assets/ico/label.svg" alt="Add Entities for {{trainingProfile.trainingProfileName}}" ce-svg>
               </button>
             </td>
             <td>
               <div class="ce-flex">
                 <button class="ce-button-default ce-icon-button " ce-tooltip="title: Edit Configuration Category;delay: 1000" name="edit {{trainingProfile.name}}"
                   (click)="editCategory(trainingProfile)">
-                  <img src="/assets/ico/edit.svg" alt="edit {{trainingProfile.name}}" ce-svg>
+                  <img src="/assets/ico/edit.svg" alt="edit {{trainingProfile.trainingProfileName}}" ce-svg>
                 </button>
                 <button class="ce-button-default ce-icon-button ce-danger ce-margin-small-left" ce-tooltip="title: delete;delay: 1000" name="edit {{trainingProfile.name}}"
                   (click)="deleteProfile(trainingProfile)">
-                  <img src="/assets/ico/delete.svg" alt="delete {{trainingProfile.name}}" ce-svg>
+                  <img src="/assets/ico/delete.svg" alt="delete {{trainingProfile.trainingProfileName}}" ce-svg>
                 </button>
               </div>
             </td>
@@ -86,15 +86,6 @@
               <label class="ce-label" for="ce-profile-description">Configuration Category Description</label>
               <input id="ce-profile-description" class="ce-input" type="text" placeholder="" formControlName="trainingProfileDesc">
             </div>
-  
-  
-           <!--  <div class="ce-margin-small">
-              <label class="ce-label" for="ce-profile-document-type">Configuration Category Type</label>
-              <select id="ce-profile-document-type" class="ce-select" formControlName="docType">
-                <option value="Rental">Rental</option>
-                <option value="Lease">Lease</option>
-              </select>
-            </div> -->
             <div class="ce-margin-small">
               <label class="ce-label" for="docTypeList">Configuration Category Type</label>
               <select
@@ -110,15 +101,6 @@
               </option>
             </select>
             </div>
-            <!-- <div class="ce-margin-small">
-              <label class="ce-label" for="ce-profile-document-lang">Language</label>
-              <select id="ce-profile-document-type" class="ce-select" formControlName="lang">
-                <option value="Spanish">Spanish</option>
-                <option value="English">English</option>
-                <option value="Japneese">Japneese</option>
-              </select>
-            </div> -->
-             
             <div class="ce-margin-small">
               <label class="ce-label" for="docLangList">Language</label>
               <select
@@ -134,7 +116,7 @@
               </option>
             </select>
             </div>
-            <button class="ce-button ce-margin-top" role="button">
+            <button class="ce-button ce-margin-top" role="button"(click)="changeProfileLists()">
               Save
             </button>
           </form>
@@ -142,4 +124,3 @@
       </div>
     </div>
   </div>
-  

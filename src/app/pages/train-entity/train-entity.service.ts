@@ -12,7 +12,6 @@ import {ResponseOptions, Response} from '@angular/http';
 
 @Injectable()
 export class TrainEntityService {
-  
   private handleError: HandleError;
 
   constructor(
@@ -33,7 +32,6 @@ export class TrainEntityService {
   
 
   getTrainingProfiles (): Observable<response> {
-    
     const _url = this.urlServices.urls.baseConfigUrl + this.urlServices.urls.trainingProfile.getAll 
     + this.urlServices.projectConfiguration.admin.organizationId;
     return this.http.get<response>(_url,this.httpOptions)
@@ -45,10 +43,10 @@ export class TrainEntityService {
   }
 
 
-  createEntity (entityObject: any): Observable<response[]> {
+  createEntity (entityObject: any): Observable<any> {
     const _url = this.urlServices.urls.baseConfigUrl + this.urlServices.urls.trainingProfile.getAll 
     + this.urlServices.projectConfiguration.admin.organizationId;
-    return this.http.post<response[]>(_url,entityObject,this.httpOptions)
+    return this.http.post(_url,entityObject,this.httpOptions)
       .pipe(
         catchError(this.handleError('create new entity ::-', []))
       );

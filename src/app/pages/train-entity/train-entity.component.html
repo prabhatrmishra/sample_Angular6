@@ -20,8 +20,8 @@
         <div class="ce-width-1-4">
           <label class="ce-label" for="ce-profile-select">Configuration Category
           </label>
-          <select id="ce-profile-select" class="ce-select" (change)="clearProfile()">
-            <option *ngFor="let trainingProfile of trainingProfiles" [value]="trainingProfile.id">{{trainingProfile.name}}</option>
+          <select id="ce-profile-select" class="ce-select" [(ngModel)]="selectedTrainingProfileId" (change)="clearProfile($event)">
+            <option *ngFor="let trainingProfile of trainingProfiles" [value]="trainingProfile.trainingProfileId" [selected]="trainingProfile === selectedTrainingProfile">{{trainingProfile.trainingProfileName}}</option>
           </select>
         </div>
         <div class="ce-flex ce-flex-column" style="justify-content: flex-end">
@@ -59,20 +59,20 @@
         </table>
         <div class="">
           <ul class="ce-entities" ce-accordion="ease:ease-in-out;toggle:* > .ce-more">
-            <li *ngFor="let entity of (definedEntities | match:filter)" class="ce-padding-small ce-background-white">
+             <li *ngFor="let entity of (definedEntities | match: filter : 'entityName')" class="ce-padding-small ce-background-white"> 
               <a class="ce-accordion-title ce-flex ce-flex-between">
-                <span class="ce-width-4-5">{{entity.name}}</span>
+                <span class="ce-width-4-5">{{entity.entityName}}</span>
                 <div class="ce-flex ce-width-1-5">
                   <button class="ce-button-default ce-icon-button ce-more " ce-tooltip="title: more;delay: 1000" name="more {{entity.name}}">
-                    <img src="/assets/ico/more.svg" alt="more {{entity.name}}" ce-svg>
+                    <img src="/assets/ico/more.svg" alt="more {{entity.entityName}}" ce-svg>
                   </button>
                   <button class="ce-button-default ce-icon-button ce-margin-small-left" ce-tooltip="title: edit;delay: 1000" name="edit {{entity.name}}"
                     (click)="editEntity(entity)">
-                    <img src="/assets/ico/edit.svg" alt="edit {{entity.name}}" ce-svg>
+                    <img src="/assets/ico/edit.svg" alt="edit {{entity.entityName}}" ce-svg>
                   </button>
                   <button class="ce-button-default ce-icon-button ce-danger ce-margin-small-left" ce-tooltip="title: delete;delay: 1000" name="delete {{entity.name}}"
                     (click)="deleteEntity(entity)">
-                    <img src="/assets/ico/delete.svg" alt="delete {{entity.name}}" ce-svg>
+                    <img src="/assets/ico/delete.svg" alt="delete {{entity.entityName}}" ce-svg>
                   </button>
                 </div>
               </a>
@@ -82,13 +82,13 @@
                   <div>
                     <div>
                       <small>Description</small>
-                      <p class="ce-margin-remove-vertical">{{entity.desc}}</p>
+                      <p class="ce-margin-remove-vertical">{{entity.entityDesc}}</p>
                     </div>
 
                     <div class="ce-margin-small-top">
                       <small>Regex</small>
                       <p class="ce-margin-remove-vertical">
-                        {{entity.regex}}
+                        {{entity.entityRegex}}
                       </p>
                     </div>
                   </div>
@@ -101,12 +101,12 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr class="ce-child-width-1-2" *ngFor="let utterance of entity.utterances">
+                        <tr class="ce-child-width-1-2" *ngFor="let utterance of entityUtteranceMap[entity.entityId]">
                           <td class="ce-width-2-3">
-                            {{utterance.example}}
+                            {{utterance.utterance}}
                           </td>
                           <td class="ce-width-1-3">
-                            {{utterance.value}}
+                            {{utterance.entityValue}}
                           </td>
                         </tr>
                       </tbody>
@@ -131,22 +131,25 @@
         <form [formGroup]="entityForm">
           <div class="ce-margin-small">
             <label class="ce-label" for="ce-entity-name">Data Attribute Name</label>
-            <input id="ce-profile-name" class="ce-input" type="text" placeholder="eg, Rentee" formControlName="name">
+            <input id="ce-profile-name" class="ce-input" type="text" placeholder="eg, Rentee" formControlName="entityName">
           </div>
 
           <div class="ce-margin-small">
             <label class="ce-label" for="ce-entity-description">Data Attribute Description</label>
-            <input id="ce-entity-description" class="ce-input" type="text" placeholder="eg, Resedential training profile" formControlName="description">
+            <input id="ce-entity-description" class="ce-input" type="text" placeholder="eg, Resedential training profile" formControlName="entityDesc">
           </div>
 
 
           <div class="ce-margin-small">
             <label class="ce-label" for="ce-entity-regex">Data Attribute Regex</label>
-            <input id="ce-entity-regex" class="ce-input" type="text" placeholder="regex Expression" formControlName="regex">
+            <input id="ce-entity-regex" class="ce-input" type="text" placeholder="regex Expression" formControlName="entityRegex">
           </div>
 
           <div>
-            <table class="ce-table ce-table-small ce-table-divider" [class.ce-margin-remove-bottom]="utterances.length == 0">
+<!--             <table class="ce-table ce-table-small ce-table-divider" [class.ce-margin-remove-bottom]="utterances.length == 0">
+ -->     
+                 <table class="ce-table ce-table-small ce-table-divider">
+    
               <thead>
                 <tr class="">
                   <th class="ce-width-4-6">Utterance</th>
@@ -155,16 +158,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="" *ngFor="let utterance of utterances">
+                <tr class="" *ngFor="let utter of utterances">
                   <td class="ce-width-4-6">
-                    {{utterance[0]}}
+                  {{utter.utterance}}
                   </td>
                   <td class="ce-width-1-6">
-                    {{utterance[1]}}
+                    {{utter.entityValue}}
                   </td>
                   <td class="ce-width-1-6">
-                    <button class="ce-button-default ce-icon-button ce-danger">
-                      <img src="/assets/ico/delete.svg" alt="delete" ce-svg>
+                    <button class="ce-button-default ce-icon-button ce-danger" (click)="deleteUtterance(utter)">
+                      <img src="/assets/ico/delete.svg" alt="delete"  ce-svg>
                     </button>
                   </td>
                 </tr>
@@ -181,7 +184,7 @@
                   </div>
                   <div class="ce-margin-small-left ce-width-1-3">
                     <div class="ce-margin-small">
-                      <input id="ce-entity-value" class="ce-input" type="text" placeholder="Value" aria-label="utterance value" formControlName="value">
+                      <input id="ce-entity-value" class="ce-input" type="text" placeholder="entityValue" aria-label="utterance value" formControlName="entityValue">
                     </div>
                     <button class="ce-button ce-width-1-1" role="button" (click)="addUtterance()">
                       Add Utterance
@@ -192,7 +195,7 @@
             </div>
           </div>
 
-          <button class="ce-button ce-margin-medium-top" role="button">
+          <button class="ce-button ce-margin-medium-top" role="button" (click)="changeEntitiesList()">
             Save Data Attribute
           </button>
         </form>

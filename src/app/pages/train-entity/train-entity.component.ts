@@ -2,35 +2,29 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DragulaService, dragula } from 'ng2-dragula/ng2-dragula';
 import { kit } from 'src/app/app.const';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TrainEntityService } from './train-entity.service'
-import { constantService } from './../../constantService'
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { TrainEntityService } from './train-entity.service';
+import { TrainProfileService } from './../../service/train.profile.service'
+import { ConstantService } from './../../constantService';
+import { RouterModule, Routes, ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+
 @Component({
   selector: 'ce-train-entity',
   templateUrl: './train-entity.component.html',
   styleUrls: ['./train-entity.component.scss'],
-  providers: [TrainEntityService, constantService]
+  providers: [TrainProfileService, TrainEntityService, ConstantService]
 })
-export class TrainEntityComponent implements OnInit, OnDestroy {
+export class TrainEntityComponent implements OnInit {
+  private selectedTrainingProfileId: String;
+  private selectedTrainingProfile: {
+    trainingProfileId: null
+  };
+  choosedOption: String;    // whether edit or delete
   private sub: any;
-  private selectedTrainingProfileId: number;
-  trainingProfiles = [
-    {
-      id: 1,
-      name: 'Operating Leases',
-      description: ' Operating Leases executed by the company with rental company ',
-      docType: ['Lease','Rental'][0],
-      lang: ['Spanish','English','Japneese'][1]
-    },
-    {
-      id: 2,
-      name: 'Invoices',
-      description: 'Invoice documents',
-      docType: ['Invoice','Rental'][0],
-      lang: ['Spanish','English','Japneese'][1]
-    }
-  ]
+  utterances = [];
+  trainingProfiles = [];
+  utterancesList = [];
+  entityUtteranceMap = {};
   private entites = [
     'Lease Type',
     'Contract type',
@@ -48,21 +42,12 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
       name: entity,
       desc: `descriptyion of ${entity}`,
       utterances: [
-        {
-          example: 'is leased by XXX',
-          value: 'v1'
-        },
-        {
-          example: 'XXX has leased XXX',
-          value: 'v1'
-        }
       ],
       synonyms: [`syn ${i}`, `syn ${i + 1}`],
       regex: '/*.*/i'
     }
   });
   profileEntities = [];
-  utterances = [];
   filter: string;
   addNewTitle: string;
   entityForm: FormGroup;
@@ -78,40 +63,65 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
     "entitySynonyms": "",
     "isActive": "string",
     "trainingProfileId": "string",
-  }
-    ;
+  };
+
+  entity = {};
   constructor(
     private formBuider: FormBuilder,
     private dragulaService: DragulaService,
     private trainEntityService: TrainEntityService,
-    private ConstantService: constantService,
+    private constantService: ConstantService,
+    private trainProfileService: TrainProfileService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.sub = this.route.params.subscribe(params => {
-      this.selectedTrainingProfileId = +params['profile'];
-      console.log("Got the id",this.selectedTrainingProfileId);
-   });
-    this.entityForm = this.formBuider.group({
-      name: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      synonyms: ['', [Validators.required]],
-      regex: ['', [Validators.required]]
-    });
+        this.sub = this.route.params.subscribe(params => {
+          this.selectedTrainingProfileId = params['profile'];
+        });
+        this.fetchEntitiesByTrainingId();
+        this.fetchUtterances();
+        this.entityForm = this.formBuider.group({
+          entityName: ['', [Validators.required]],
+          entityDesc: ['', [Validators.required]],
+          entitySynonyms: ['', [Validators.required]],
+          entityRegex: ['', [Validators.required]]
+        });
+        this.populateTrainingPorfiles();
+        this.utteranceForm = this.formBuider.group({
+          utterance: ['', [Validators.required]],
+          entityValue: ['', [Validators.required]]
+        })
+  }
+ 
+  changeEntitiesList() {
+    if (this.choosedOption === 'add')
+      this.saveEntity();
+    else if (this.choosedOption === 'update')
+      this.updateEntity(this.entity);
+  }
 
-    this.populateTrainingPorfiles();
+  fetchEntitiesByTrainingId() {
+    this.profileEntities = [];
+    this.trainProfileService.getEntitiesByTrainingId(this.selectedTrainingProfileId)
+      .subscribe((entities: Array<any>) => {
+        this.definedEntities = entities;
+      },
+      err => {
+        alert("Some error occured while fetching entitties")
+      })
+  }
 
-    this.utteranceForm = this.formBuider.group({
-      utterance: ['', [Validators.required]],
-      value: ['', [Validators.required]]
+  deleteUtterance(utterance) {
+    this.utterances.splice(this.utterances.indexOf(utterance), 1)
+    if(utterance.entityUtteranceId != undefined 
+      && (utterance.entityUtteranceId != null))
+    this.trainProfileService.deleteUtterance(utterance.entityUtteranceId)
+    .subscribe(data=>{
+      alert("Deleted successfully ");
     })
-
-  }
-
-  ngOnDestroy() {
-  }
+  } 
 
   startTraining() {
     this.trainPercent = 1;
@@ -124,6 +134,7 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
   }
 
   addNewEntity() {
+    this.choosedOption = 'add';
     this.addNewTitle = 'Add New Data Attributes';
     this.entityForm.reset();
     this.utterances = [];
@@ -131,119 +142,260 @@ export class TrainEntityComponent implements OnInit, OnDestroy {
   }
 
   editEntity(entity) {
+    this.choosedOption = 'update';
+    this.entity = entity;
+    this.utterances = this.entityUtteranceMap[entity.entityId];
     this.addNewTitle = `Edit Data Attributes`
-    this.entityForm.get('name').setValue('Lessee Party');
-    this.entityForm.get('description').setValue('The legal entity which is leasing the interested item');
-    this.entityForm.get('synonyms').setValue(entity.synonyms.join(';'));
-    this.entityForm.get('regex').setValue('');
-    this.utterances = [
-      ['This agreement is made between ABC Inc hereinafter referred to as Lessee and XYZ Inc hereinafter referred to as on 12th of November 2017', 'ABC Inc'],
-      ['THIS EQUIPMENT LEASE ("Lease") is made and effective 12th of November 2017, by and between ABC Inc, ("Lessor") and XYZ Inc ("Lessee").', 'ABC Inc']
-    ]
-
+    this.entityForm.get('entityName').setValue(entity.entityName);
+    this.entityForm.get('entityDesc').setValue(entity.entityDesc);
+    this.entityForm.get('entityRegex').setValue(entity.entityRegex);
+    //this.entityForm.get('entitySynonyms').setValue(entity.get('entitySynonyms'));
     kit.modal("#add-entity").show();
   }
 
-  deleteEntity(entitiy) {
-    this.definedEntities.splice(this.definedEntities.indexOf(entitiy), 1);
-  }
-
-  addUtterance() {
-    this.utterances.push([
-      this.utteranceForm.get('utterance').value,
-      this.utteranceForm.get('value').value
-    ]);
-    this.utteranceForm.reset();
-  }
-
-  clearProfile() {
-    this.profileEntities = [];
-  }
-
-  populateTrainingPorfiles(){
-    this.trainEntityService
-        .getTrainingProfiles()
-        .subscribe( 
-        data =>{
-          console.log("I am getting data .....");
-          console.log(data);
-          if(data[0].status == 200){
-        //    alert("Training profiles fetched Susccessfully.");
-            console.log(data);
-          }
-          else{
-           // alert("Some error occured while fetching data.");
-          }
+  updateEntity(entity) {
+    let entityJson = this.formatEntityUpdateJson();
+    if (this.warningChecking(entityJson) === true) {
+      this.trainProfileService.updateEntityObject(this.formatEntityUpdateJson(), 
+      Number(entity.entityId))
+      .subscribe(
+      data=>{
+        this.createUtterances(entity);
+        alert("Entity updated successfully.");
+        this.loadData();
       },
-      error =>{
-        //  alert("Some error occured at server side ")
-      }
-    )
+      err=>{
+        alert("Some error occured while updating entity.");
+      })
+    }
+    else {
+      alert("Provide valid inputs.");
+    }
+}
+  
+  deleteEntity(entity) {
+    this.trainProfileService.deleteEntity(Number(entity.entityId))
+      .subscribe(
+      data => {
+        alert("Entity deleted successfully");
+        this.definedEntities.splice(this.definedEntities.indexOf(entity), 1);
+      },
+      err => {
+        alert("Some error occured while deleting entity.")
+      })
+  }
+/* 
+  addUtterance() {
+    let utter = this.utteranceForm.get('utterance').value;
+    let val = this.utteranceForm.get('entityValue').value;
+    if(utter.indexOf(val) < 0){
+      alert("Value which you have entered is not in utterance");
+    }
+    else{
+      this.utterances.push([
+        this.utteranceForm.get('utterance').value,
+        this.utteranceForm.get('entityValue').value
+      ]);
+      this.utteranceForm.reset();
+    }
+  } */
+
+  
+  addUtterance(){
+   // this.utterances = [];
+    let utter = this.utteranceForm.get('utterance').value;
+    let val = this.utteranceForm.get('entityValue').value;
+    if(utter.indexOf(val) < 0){
+      alert("Value which you have entered is not in utterance");
+    }
+    else{
+      this.utterances.push({
+        'utterance': utter,
+        'entityValue': val,
+        "startValue" : String(utter.utterance.indexOf(utter.entityValue)) + 1,
+        "endValue" : String(utter.utterance.indexOf(utter.entityValue) +
+                     String(utter.utterance.indexOf(utter.entityValue)).length +1) ,
+      });
+      this.utteranceForm.reset();
+    }
   }
 
+
+  clearProfile(event) {
+    this.fetchEntitiesByTrainingId();
+  }
+
+  populateTrainingPorfiles() {
+    this.trainProfileService
+      .fetchAllTrainingPorfiles(1)
+      .subscribe(profiles => {
+        this.trainingProfiles = profiles;
+        this.trainingProfiles.forEach(profile => {
+          if (this.selectedTrainingProfileId === profile.trainingProfileId) {
+            this.selectedTrainingProfile = profile;
+          }
+        })
+      },
+      error => {
+        alert("Some error occured at server side ")
+      })
+  }
   saveEntity() {
-    console.log("Save me ...")
-    console.log(this.utterances);
     let newEntity = this.formatEntityCreateJson();
     console.log(JSON.stringify(newEntity));
-    this.trainEntityService
+    this.trainProfileService
       .createEntity(newEntity)
       .subscribe(
       data => {
         console.log(data);
-        if (data[0].status == 200) {
-          alert("Entity created successfully !!");
-        }
-        else {
-          alert("Some error occured while creating entity")
-        }
+        alert("Entity created successfully !!");
+        this.loadData();
       },
       err => {
         alert("Some error occured at server side !!")
-      },
-      () => { }
-      )
+      })
   }
 
-  // NOTE: already checking with Validators,
   warningChecking(newEntity): boolean {
-    let validFlag: boolean = true;
-    var z1 = '^[0-9]*\d$';
-    newEntity.utterancesList.map(element => {
-      if (element.utterance.trim() == ''
-        || element.entityValue.trim() == '') {
-        alert("Utterances and its values should not be empty . ")
+      let validFlag: boolean = true;
+      if(newEntity.utterancesList != undefined && newEntity.utterancesList != null  )
+      newEntity.utterancesList.map(element => {
+        if (element.utterance.trim() == ''
+          || element.entityValue.trim() == '') {
+          alert("Utterances and its values should not be empty . ")
+          validFlag = false;
+        }
+      });
+      if (newEntity.entityName.trim() == ''
+        || newEntity.entityDesc.trim() == ''
+       ) {
         validFlag = false;
       }
-    });
-    if (newEntity.entityName.trim() == ''
-      || newEntity.entityDesc.trim() == ''
-      || newEntity.entityRegex.trim() == '') {
-      validFlag = false;
-    }
-    return validFlag;
+      return validFlag;
   }
-
-  //NOTE: use maps,its optimised   
+ 
   formatEntityCreateJson() {
-    let utteranceListJson = [];
-    this.utterances.map(utter =>
-      utteranceListJson.push({
-        "utterance": utter[0],
-        "entityValue": utter[1]
-      }))
-
-    // no extra-obj for return; consumes mem; more @ ImmutableJS 
+      let utteranceListJson = [];
+      this.utterances.map(utter =>
+        utteranceListJson.push({
+          "utterance": utter.utterance,
+          "entityValue": utter.entityValue,
+          "startValue" : String(utter.utterance.indexOf(utter.entityValue)) + 1,
+          "endValue" : String(utter.utterance.indexOf(utter.entityValue) +
+                       String(utter.utterance.indexOf(utter.entityValue)).length +1) ,
+        }))
+      return {
+        "entityName": this.entityForm.get('entityName').value,
+        "entityDesc": this.entityForm.get('entityDesc').value,
+        "entityRegex": [this.entityForm.get('entityRegex').value],
+        "entitySynonyms": null,
+        "trainingProfileId": this.selectedTrainingProfileId,
+        "isActive": "true",
+        "utterancesList": utteranceListJson
+      };
+  }
+ 
+  formatEntityUpdateJson() {
     return {
-      "entityName": this.entityForm.get('name').value,
-      "entityDesc": this.entityForm.get('description').value,
-      "entityRegex": [this.entityForm.get('regex').value],
+      "entityName": this.entityForm.get('entityName').value,
+      "entityDesc": this.entityForm.get('entityDesc').value,
+      "entityRegex": [this.entityForm.get('entityRegex').value],
       "entitySynonyms": null,
-      "trainingProfileId": 1,
-      "isActive": "true",
-      "utterancesList": utteranceListJson
+      "trainingProfileId": this.selectedTrainingProfileId,
+      "isActive": "true"
     };
+}
+
+  fetchUtterances(){
+    this.trainProfileService.getAllUtterances()
+    .subscribe(
+    (utterances : Array<any>) =>{
+      this.utterancesList = utterances;
+      this.utterancesList.forEach(utter =>{
+        if(this.entityUtteranceMap[utter.entityId] == null){
+          this.entityUtteranceMap[utter.entityId] = new Array<any>();
+          this.entityUtteranceMap[utter.entityId].push(utter);
+        }
+        else
+            this.entityUtteranceMap[utter.entityId].push(utter);
+        })
+    })
   }
 
+  createUtterances(entity){
+      let postUtteranceList = this.makeUtteranceJSON(entity);
+      console.log("postUtteranceList -------------------->", postUtteranceList);
+      this.trainProfileService.createUtterance(postUtteranceList)
+      .subscribe(
+        data =>{
+          console.log("Utterances created successfully .");
+        }
+      )
+  }
+   
+  // second way to make utterance List
+  makeUtteranceJSON2(entity){
+      let postUtteranceList = [];
+      this.utterances.forEach(utter=>{
+          if(!(utter.entityUtteranceId == undefined 
+            && utter.entityUtteranceId == null )){
+              postUtteranceList.push(utter);
+            }
+      })
+      return postUtteranceList;
+  }
 
+  makeUtteranceJSON(entity){
+    let postUtteranceList = this.utterances;
+    let o_utterancesList = this.entityUtteranceMap[entity.entityId] ;
+    console.log("o_utterancesList --------------->" , o_utterancesList);
+    console.log("postUtteranceList --------------->" , postUtteranceList);
+    this.utterancesList.forEach(element1 => {
+      let flag =0;
+      o_utterancesList.forEach(element2 =>{
+          if(element1.entityUtteranceId === element2.entityUtteranceId){
+            flag = 1;
+         }
+      })
+      if(flag === 1){
+        postUtteranceList = this.removeDuplicateElement(postUtteranceList,element1);
+      }
+    });
+    return postUtteranceList;
+  } 
+
+  /* 
+  makeUtteranceJSON(entity){
+    let postUtteranceList = this.utterances;
+    let o_utterancesList = this.entityUtteranceMap[entity.entityId] ;
+    console.log("o_utterancesList --------------->" , o_utterancesList);
+    console.log("postUtteranceList --------------->" , postUtteranceList);
+    o_utterancesList.forEach(element1 => {
+      let flag =false;
+      this.utterancesList.forEach(element2 =>{
+          if(element1.entityUtteranceId === element2.entityUtteranceId){
+            flag = true;
+         }
+      })
+      if(flag === false){
+        postUtteranceList = this.removeDuplicateElement(postUtteranceList,element1);
+      }
+    });
+    return postUtteranceList;
+  }  */
+
+  removeDuplicateElement(postUtteranceList , element){
+      let resultList = [];
+      postUtteranceList.array.forEach(ele => {
+        if(ele.entityUtteranceId != element.entityUtteranceId){
+          resultList.push(ele);
+        }
+      });
+      return resultList;
+  }
+  loadData(){
+    this.fetchEntitiesByTrainingId();
+    this.fetchUtterances();
+    this.utterances = [];
+  }
 }
